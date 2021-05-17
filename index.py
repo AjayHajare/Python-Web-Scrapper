@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import validators
 from pymongo import MongoClient
-
+import time
+from datetime import datetime, timedelta
 
 client = MongoClient()                                                      #instablish a connection
 db = client["Crawler"]                                                      #define the collection
@@ -15,7 +16,13 @@ def alreadyExists(URL):
     else:
         return False
     
-    
+#function to count time at 24 hours ago
+def time24HoursAgo() :
+        today = datetime.today()                                #it gives todays date and time
+        BackTo24Hours = today - timedelta(days=1)                 #it calculates time for 24 hours ago & stores it in 'days_back' variable
+        return BackTo24Hours                                      #return datetime
+
+
 def main():
         URL = "https://flinkhub.com/"                                           #define the URL
 
@@ -23,8 +30,6 @@ def main():
                 db.Links.insert_one( {"link":URL} )                             #insert root URL in database
 
         criteria = {"$and": [{"date": {"$gte": time24HoursAgo() }} ]}           #'criteria' variable is a 'filter' to fetch all links with date ($gte)greater than 'days_back'
-
-        #db.Links.delete_many({})
 
         for _ in range(2):
                 req = requests.get(URL)                                         #send request to server and server will send 'response HTLML' 
@@ -35,7 +40,8 @@ def main():
                     if ( validators.url(i['href']) and  not alreadyExists(i['href']) ):                                  #check for valid URL and check whether URL is already present in database
                         db.Links.insert_one({"link":i['href'], "date":datetime.today().replace(microsecond=0) })         #if URL is valid and not present in database, insert link and time into database
 
-        
+                time.sleep(5)                                           #it will make process sleep for 5 seconds
+
                 
 if __name__ == '__main__' :
         main()
