@@ -32,6 +32,8 @@ def main():
         criteria = {"$and": [{"date": {"$gte": time24HoursAgo() }} ]}           #'criteria' variable is a 'filter' to fetch all links with date ($gte)greater than 'days_back'
 
         for _ in range(2):
+                count = 0                                                       #'count' is defined to count no of links scraped in a cycle
+                
                 req = requests.get(URL)                                         #send request to server and server will send 'response HTLML' 
 
                 parse_content = BeautifulSoup(req.text, 'html5lib')             #parse 'response HTML' using BeautifulSoup
@@ -39,7 +41,10 @@ def main():
                 for i in parse_content.find_all('a', href=True):                #extract <a> tag from parse content
                     if ( validators.url(i['href']) and  not alreadyExists(i['href']) ):                                  #check for valid URL and check whether URL is already present in database
                         db.Links.insert_one({"link":i['href'], "date":datetime.today().replace(microsecond=0) })         #if URL is valid and not present in database, insert link and time into database
-
+                
+                if count==0:
+                    print("All links crawled")
+                    
                 time.sleep(5)                                           #it will make process sleep for 5 seconds
 
                 
