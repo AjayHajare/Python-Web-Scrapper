@@ -22,7 +22,15 @@ def time24HoursAgo() :
         BackTo24Hours = today - timedelta(days=1)                 #it calculates time for 24 hours ago & stores it in 'days_back' variable
         return BackTo24Hours                                      #return datetime
 
-
+#validate an URL using try & catch mechanism
+def validateURL(sourceLink) :
+    try:
+        response = requests.get(sourceLink)
+        return True
+    except:
+        return False
+    
+    
 def main():
         URL = "https://flinkhub.com/"                                           #define the URL
 
@@ -31,17 +39,17 @@ def main():
 
         criteria = {"$and": [{"date": {"$gte": time24HoursAgo() }} ]}           #'criteria' variable is a 'filter' to fetch all links with date ($gte)greater than 'days_back'
 
-        for _ in range(2):
+        while True:
                 count = 0                                                       #'count' is defined to count no of links scraped in a cycle
-                
-                req = requests.get(URL)                                         #send request to server and server will send 'response HTLML' 
+                response = requests.get(sourceLink)                                  #send request to server and server will send 'response HTLML' 
 
-                parse_content = BeautifulSoup(req.text, 'html5lib')             #parse 'response HTML' using BeautifulSoup
+                parse_content = BeautifulSoup(response.text, 'html5lib')             #parse 'response HTML' using BeautifulSoup
 
                 for i in parse_content.find_all('a', href=True):                #extract <a> tag from parse content
-                    if ( validators.url(i['href']) and  not alreadyExists(i['href']) ):                                  #check for valid URL and check whether URL is already present in database
-                        db.Links.insert_one({"link":i['href'], "date":datetime.today().replace(microsecond=0) })         #if URL is valid and not present in database, insert link and time into database
-                
+                    if ( validateURL(i['href']) and  not isCrawled(i['href']) ):                                  #check for valid URL and check whether URL is already present in database
+                        db.Links.insert_one({"link":i['href'], "createdAt":datetime.today().replace(microsecond=0) })         #if URL is valid and not present in database, insert link and time into database
+                        count+=1
+
                 if count==0:
                     print("All links crawled")
                     
