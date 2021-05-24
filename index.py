@@ -65,6 +65,8 @@ if __name__ == '__main__' :
                 print("Please enter a valid URL")
                 sys.exit()
 
-        while True:
-                scrapeCycle()
+        while True:        
+                with ThreadPoolExecutor(max_workers = 5) as executor:                        #ThreadPoolExecutor is library in python which is used to implement multithreading
+                    executor.submit(scrapeCycle)                                             #call to function 'scrapeCycle()'
+        
  
