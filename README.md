@@ -1,9 +1,11 @@
 # Python-Web-Scrapper
 
 Problem statement:
+
 Build a spiderbot (web scraper) that continuously runs in the background and recursively scrapes all links it can find
 
 Problem Details:
+
 The Root URL for this project will be https://flinkhub.com . The Root URL must be manually entered into the database before the process starts. 
 
 As soon as the process starts, it should check the “links” table for pending links to scrape. It should scrape all these links, extract all valid links (through <a> tags) 
