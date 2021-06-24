@@ -3,6 +3,7 @@ import validators
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from database import insertLinkInDatabase, connectToDatabase
+from cfg import SLEEP_INTERVAL
 import time
 import uuid
 
@@ -66,7 +67,7 @@ def scrapeCycle(sourceLink):
     if (count==0):
         print("All links crawled")
     
-    time.sleep()
+    time.sleep(SLEEP_INTERVAL)
 
 
     
