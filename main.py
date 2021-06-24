@@ -1,4 +1,4 @@
-from cfg import root_URL
+from cfg import root_URL, threadCount
 from database import getLinks, insertLinkInDatabase
 from crawler import scrapeCycle, getResponse, saveFile
 from concurrent.futures import ThreadPoolExecutor
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     while True:     
         try :
             pendingLinks = getLinks()
-            with ThreadPoolExecutor(max_workers = 5) as executor:                        #ThreadPoolExecutor is library in python which is used to implement multithreading
+            with ThreadPoolExecutor(max_workers = threadCount) as executor:                        #ThreadPoolExecutor is library in python which is used to implement multithreading
                 executor.map(scrapeCycle,pendingLinks)                                   #call to function 'scrapeCycle()'
                 
         except Exception as error :
