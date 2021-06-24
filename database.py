@@ -1,4 +1,4 @@
-from cfg import databaseName
+from cfg import databaseName, MAX_LINK_LIMIT
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -22,7 +22,7 @@ def insertLinkInDatabase(l, sourceLink, response, filePath, lastCrawlDt) :
     }
     db.Links.insert_one(document)
 
-    if db.Links.count_documents({}) >= 5000:
+    if db.Links.count_documents({}) >= MAX_LINK_LIMIT:
         print("Maximum limit reached")
         
 
